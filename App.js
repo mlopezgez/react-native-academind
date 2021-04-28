@@ -27,6 +27,7 @@ export default function App() {
     setIsAddMode(false);
   };
 
+  
   return (
     <View style={styles.screen}>
       <Button title="Add New Goal" onPress={() => setIsAddMode(true)} />
