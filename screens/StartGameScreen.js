@@ -9,15 +9,16 @@ import {
   TouchableWithoutFeedback,
 } from "react-native";
 
-
-import Input from "../components/Input";
 import Card from "../components/Card";
-import NumberContainer from "../components/Number"
+import MainButton from '../components/MainButton'
+import Input from "../components/Input";
 import Colors from "../constants/colors";
+import BodyText from "../components/BodyText"
+import NumberContainer from "../components/Number"
 
 const StartGameScreen = (props) => {
-  const [enteredValue, setEnteredValue] = useState("");
   const [confirmed, setConfirmed] = useState(false);
+  const [enteredValue, setEnteredValue] = useState("");
   const [selectedNumber, setSelectedNumber] = useState();
 
   const numberInputHandler = (inputText) => {
@@ -49,7 +50,7 @@ const StartGameScreen = (props) => {
       <Card style={styles.summaryContainer}>
         <Text>You selected</Text>
         <NumberContainer>{selectedNumber}</NumberContainer>
-        <Button title="START GAME"/>
+        <MainButton onPress={() => props.onStartGame(selectedNumber)} > {"START GAME"} </ MainButton>
       </Card>
     );
   }
@@ -63,7 +64,7 @@ const StartGameScreen = (props) => {
       <View style={styles.screen}>
         <Text style={styles.title}>Start a New Game!</Text>
         <Card style={styles.inputContainer}>
-          <Text>Select a Number</Text>
+          <BodyText>Select a Number</BodyText>
           <Input
             style={styles.input}
             keyboardType="number-pad"
@@ -106,6 +107,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 20,
     marginVertical: 10,
+    fontFamily: 'open-sans-bold'
   },
   inputContainer: {
     width: 300,
@@ -130,6 +132,9 @@ const styles = StyleSheet.create({
     padding: 30,
     alignItems: 'center',
     marginVertical: 20
+  },
+  text: {
+    fontFamily: 'open-sans'
   }
 });
 
