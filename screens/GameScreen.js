@@ -1,6 +1,8 @@
 import React, { useState, useRef, useEffect } from "react";
 import { View, Text, StyleSheet, Alert, Button } from "react-native";
 
+import { Ionicons } from '@expo/vector-icons'
+
 import NumberContainer from "../components/Number";
 import Card from "../components/Card";
 
