@@ -1,10 +1,19 @@
-import React, { useState, useRef, useEffect } from "react";
-import { View, Text, StyleSheet, Alert, Button } from "react-native";
-
-import { Ionicons } from '@expo/vector-icons'
-
-import NumberContainer from "../components/Number";
+import uuidv4 from "uuid/v4";
 import Card from "../components/Card";
+import MainButton from "../components/MainButton";
+import { Ionicons } from "@expo/vector-icons";
+import NumberContainer from "../components/Number";
+import BodyText from "../components/BodyText";
+import React, { useState, useRef, useEffect } from "react";
+import {
+  View,
+  Text,
+  StyleSheet,
+  Alert,
+  Button,
+  ScrollView,
+  FlatList,
+} from "react-native";
 
 const generateRandomBetween = (min, max, exclude) => {
   min = Math.ceil(min);
@@ -17,11 +26,17 @@ const generateRandomBetween = (min, max, exclude) => {
   }
 };
 
+const renderListItem = (listLength, itemData) => (
+  <View key={uuidv4()} style={styles.listItem}>
+    <BodyText>#{listLength - itemData.index}</BodyText>
+    <BodyText>{itemData.item}</BodyText>
+  </View>
+);
+
 const GameScreen = (props) => {
-  const [currentGuess, setCurrentGuess] = useState(
-    generateRandomBetween(1, 100, props.userChoice)
-  );
-  const [rounds, setRounds] = useState(0);
+  const initialGuess = generateRandomBetween(1, 100, props.userChoice);
+  const [currentGuess, setCurrentGuess] = useState(initialGuess);
+  const [pastGuesses, setPastGuesses] = useState([initialGuess.toString()]);
   const currentLow = useRef(1);
   const currentHigh = useRef(100);
 
@@ -29,7 +44,7 @@ const GameScreen = (props) => {
 
   useEffect(() => {
     if (currentGuess === userChoice) {
-      onGameOver(rounds);
+      onGameOver(pastGuesses.length);
     }
   }, [currentGuess, userChoice, onGameOver]);
 
@@ -56,7 +71,11 @@ const GameScreen = (props) => {
     );
 
     setCurrentGuess(nextNumber);
-    setRounds((curRounds) => curRounds + 1);
+    // setRounds((curRounds) => curRounds + 1);
+    setPastGuesses((curPastGuesses) => [
+      nextNumber.toString(),
+      ...curPastGuesses,
+    ]);
   };
 
   return (
@@ -64,17 +83,31 @@ const GameScreen = (props) => {
       <Text>Oppnent's Guess</Text>
       <NumberContainer>{currentGuess}</NumberContainer>
       <Card style={styles.buttonContainer}>
-        <Button title="LOWER" onPress={nextGuessHandler.bind(this, "lower")} />
-        <Button
-          title="GREATER"
-          onPress={nextGuessHandler.bind(this, "greater")}
-        />
+        <MainButton onPress={nextGuessHandler.bind(this, "lower")}>
+          <Ionicons name="md-remove" size={24} color="white" />
+        </MainButton>
+        <MainButton onPress={nextGuessHandler.bind(this, "greater")}>
+          <Ionicons name="md-add" size={24} color="white" />
+        </MainButton>
       </Card>
-
-      <Card style={{...styles.buttonContainer, ...styles.exitButtonContainer}}>
+      <Card
+        style={{ ...styles.buttonContainer, ...styles.exitButtonContainer }}
+      >
         <Button title="Exit Game" onPress={props.onRestart} />
       </Card>
-
+      <View style={styles.listContainer}>
+        {/* <ScrollView contentContainerStyle={styles.list}>
+          {pastGuesses.map((guess, index) =>
+            renderListItem(guess, pastGuesses.length - index)
+          )}
+        </ScrollView> */}
+        <FlatList
+          keyExtractor={(item) => item}
+          data={pastGuesses}
+          renderItem={renderListItem.bind(this, pastGuesses.length)}
+          contentContainerStyle={styles.list}
+        />
+      </View>
     </View>
   );
 };
@@ -94,7 +127,26 @@ const styles = StyleSheet.create({
   },
   exitButtonContainer: {
     width: 150,
-  }
+  },
+  listContainer: {
+    flex: 1,
+    width: "80%",
+  },
+  list: {
+    flexGrow: 1,
+    alignItems: "center",
+    justifyContent: "flex-end",
+  },
+  listItem: {
+    borderColor: "#ccc",
+    borderWidth: 1,
+    padding: 15,
+    marginVertical: 10,
+    backgroundColor: "white",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    width: "60%",
+  },
 });
 
 export default GameScreen;

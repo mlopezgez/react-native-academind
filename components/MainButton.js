@@ -15,13 +15,13 @@ const MainButton = (props) => {
 const styles = StyleSheet.create({
   button: {
     backgroundColor: Colors.primary,
-    paddingVertical: 12,
+    paddingVertical: 11,
     paddingHorizontal: 30,
     borderRadius: 25,
   },
   buttonText: {
-    color: 'white',
-    fontFamily: 'open-sans',
+    color: "white",
+    fontFamily: "open-sans",
   },
 });
 
